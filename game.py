@@ -328,8 +328,13 @@ class Game:
             # Announce the winner of the round
             settings.mainscreen.clear()
             roundScores = [self.scores[i]-self.prevScores[i] for i in range(len(self.scores))]
-            winner = roundScores.index(min(roundScores)) + 1
-            settings.mainscreen.addstr(2, 0, ('Player ' + str(winner) + ' is the winner of').center(curses.COLS-1))
+            # Check for ties
+            if(len(roundScores) != len(set(roundScores))):
+                winner = 'There was a tie in'
+            else:
+                winnerId = roundScores.index(min(roundScores)) + 1
+                winner = 'Player ' + str(winnerId) + ' is the winner of'
+            settings.mainscreen.addstr(2, 0, winner.center(curses.COLS-1))
             settings.mainscreen.addstr(3, 0, ('Round #' + str(self.curRound) + ' of').center(curses.COLS-1))
             settings.mainscreen.addstr(5, 0, settings.buildLogo())
             settings.mainscreen.addstr(17, 31, '[ Press any key to continue ]', curses.color_pair(4))
@@ -338,7 +343,12 @@ class Game:
 
         # Announce the winner of the game
         settings.mainscreen.clear()
-        settings.mainscreen.addstr(2, 0, ('Player ' + str(self.scores.index(min(self.scores))+1) + ' is the winner of').center(curses.COLS-1))
+        # Check for ties
+        if(len(self.scores) != len(set(self.scores))):
+            winner = 'There was a tie for this game of'
+        else:
+            winner = 'Player ' + str(self.scores.index(min(self.scores))+1) + ' is the winner of'
+        settings.mainscreen.addstr(2, 0, winner.center(curses.COLS-1))
         settings.mainscreen.addstr(5, 0, settings.buildLogo())
         settings.mainscreen.addstr(17, 31, '[ Press any key to continue ]', curses.color_pair(1))
         settings.mainscreen.bkgd(' ', curses.color_pair(4))
