@@ -2,6 +2,7 @@
 
 Six Card Golf was one of my favorite games as a kid, so I really enjoyed diving into the mechanics, strategy, and usability of the game.
 I had a lot of fun working on this challenge problem, and I hope you enjoy playing it! 
+![Screenshot](https://github.com/Jordan-Loeser/card-golf/blob/master/screenshot.png)
 
 ## Game Rules
 
