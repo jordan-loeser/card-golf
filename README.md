@@ -1,14 +1,12 @@
 # Six Card Golf 🏌️‍♂️⛳🏌️‍♀️
 
-| Players | 2-4 |
-|---------|-----|
-
 Six Card Golf was one of my favorite games as a kid, so I really enjoyed diving into the mechanics, strategy, and usability of the game.
 I had a lot of fun working on this challenge problem, and I hope you enjoy playing it! 
 
-\- Jordan
-
 ## Game Rules
+
+| Players | 2-4 |
+|---------|-----|
 
 As defined by Bicycle Playing Cards:
 > #### THE DEAL
@@ -33,13 +31,13 @@ As defined by Bicycle Playing Cards:
 
 ## Design Decisions
 
-#### Considerations Taken
+#### CONSIDERATIONS TAKEN
 * What happens if the terminal size is not large enough to display some graphics?
 * What happens if the round ends without everyone getting equal turns?
 * What happens if the draw pile runs out of cards?
 * What happens if the keyboard input is invalid (during game initialization, drawing, or discarding)?
 * What happens if the score is tied at the end of a round or game?
 
-#### Resources Used
+#### RESOURCES USED
 * [Six Card Golf - Card Game Rules](https://www.bicyclecards.com/how-to-play/six-card-golf/) by Bicycle Playing Card
 * [Curses Programming with Python](https://docs.python.org/3/howto/curses.html) by Python 3.7 docs
