@@ -21,9 +21,9 @@ def main(stdscr):
     # Initialize Windows
     settings.init()
 
-    # Start the game
+    # Run the game until [ctr-c] is pressed
     while True:
         game = Game()
         game.playGolf()
 
-curses.wrapper(main)
+curses.wrapper(main) # Facilitate curses setup and teardown

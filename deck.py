@@ -17,16 +17,21 @@ class Deck:
             for val in range(1, 14):
                 self.cards.append(Card(suit, val))
 
-    def getCard(self, index):
-        curCard = self.cards[index]
-        return curCard.getFaceValue() + ' of ' + curCard.getSuit()
-
     def addCard(self, newCard):
+        """
+        addCard(): appends a Card to the deck
+        """
         self.cards.append(newCard)
 
     def shuffle(self):
+        """
+        shuffle(): randomly shuffles the deck
+        """
         random.shuffle(self.cards)
 
     def drawCard(self):
+        """
+        drawCard(): returns and removes the top card of the deck
+        """
         card = self.cards.pop()
         return card

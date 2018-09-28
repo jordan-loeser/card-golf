@@ -28,7 +28,7 @@ class Game:
         settings.mainscreen.addstr(14, 2, '│ A = 1 │ 2 = -2 │ 3-10 = Face Value │ Q & J = 10 │ K = 0 │')
         settings.mainscreen.addstr(15, 2, '└───────┴────────┴───────────────────┴────────────┴───────┘')
         settings.mainscreen.addstr(17, 31, '[ Press any key to begin ]', curses.color_pair(4))
-        start = settings.mainscreen.getch()
+        start = settings.mainscreen.getch() # Wait for feedback
 
         # Initialize number of players
         settings.mainscreen.clear()
@@ -50,7 +50,7 @@ class Game:
 
         curses.curs_set(0); # Hide the cursor
 
-        # Start game fresh
+        # Start game from scratch
         self.scores = [0] * self.numPlayers
         self.prevScores = [0] * self.numPlayers
         self.curPlayer = 1
@@ -58,8 +58,8 @@ class Game:
         self.curTurn = 0
         self.roundFinished = False
 
+        # Prepare the screen for gameplay
         settings.mainscreen.clear()
-
         # Hide the logo if the terminal is not wide enough to fit it
         if(curses.COLS < 100): settings.scoreboard.clear()
 
@@ -70,9 +70,11 @@ class Game:
         scoreboardText = []
         line = 0
 
+        # Upper Border
         settings.scoreboard.addstr(line, 0, ' ┌────────' + ('┬─────' * self.numPlayers) + '┐')
         line += 1
 
+        # Middle Rows
         for i in range(2):
             # Row label
             row = ' │ ' + ('Player │ ' if i == 0 else ' Score │ ')
@@ -82,9 +84,11 @@ class Game:
             # Display row
             settings.scoreboard.addstr(line, 0, row)
             line += 1
+            # Middle Border
             settings.scoreboard.addstr(line, 0, ' ├────────' + ('┼─────' * self.numPlayers) + '┤')
             line += 1
 
+        # Bottom Border
         settings.scoreboard.addstr(line-1, 0, ' └────────' + ('┴─────' * self.numPlayers) + '┘')
 
         # Show the scoreboard
@@ -133,7 +137,7 @@ class Game:
         # Therefore it is not cemented until the end of the round
         curScore = 0
 
-        # Ignore matching columns
+        # Matching columns count as 0 points
         for col in range(3):
             topCard = playerHand.cards[col]
             bottomCard = playerHand.cards[col+3]
@@ -141,8 +145,7 @@ class Game:
             if((topCard.faceUp and bottomCard.faceUp) and (topCard.value == bottomCard.value)):
                 continue
             else:
-                for c in range(2):
-                    card = playerHand.cards[col+(c*3)]
+                for card in [topCard, bottomCard]:
                     if(card.faceUp):
                         if(card.value == 2):
                             curScore -= 2
@@ -151,6 +154,7 @@ class Game:
                         elif(card.value != 13):
                             curScore += card.value
 
+        # Update current total score, including previous rounds
         self.scores[self.curPlayer-1] = curScore + self.prevScores[self.curPlayer-1]
 
         self.buildScoreboard()
@@ -193,44 +197,43 @@ class Game:
         else:
             settings.mainscreen.addstr(13, 48, 'Draw from pile', curses.color_pair(2))
             settings.mainscreen.addstr(14, 48, '[7] or [8]', curses.color_pair(2))
-            # Check if this is the player's last turn
+            # Warn the player if it is their last turn
             if(self.roundFinished):
                 settings.mainscreen.addstr(16, 48, 'You have one last turn', curses.color_pair(4))
                 settings.mainscreen.addstr(17, 48, 'before your cards are flipped!', curses.color_pair(4))
             settings.mainscreen.refresh()
-            # Give the player options to move
+
+            # Let the player decide where to draw from
             drawFrom = None
             validInput = False
             while not validInput:
                 drawFrom = settings.mainscreen.getch() - 48
                 curses.flushinp()
                 if(drawFrom == 7):
-                     # [7] Draw Pile
+                     # Draw top card of draw pile
                     self.deck.cards[-1].flipUp()
                     self.showHand()
                     settings.mainscreen.addstr(9, 48, '[7]', curses.color_pair(4))
                     validInput = True
                 elif(drawFrom == 8):
-                    # [8] Discard Pile
+                    # Draw top card of discard pile
                     settings.mainscreen.addstr(9, 62, '[8]', curses.color_pair(4))
                     validInput = True
                 else:
                     # Invalid Input
                     settings.mainscreen.addstr(17, 48, 'Press [7] or [8]', curses.color_pair(4))
 
-            # Choose where to put the card
+            # Let the player decide where to place the drawn card
             settings.mainscreen.addstr(11, 48, 'Player ' + str(self.curPlayer) + ':', curses.color_pair(2))
             settings.mainscreen.addstr(13, 48, 'Swap with a card [1-6]', curses.color_pair(2))
             settings.mainscreen.addstr(14, 48, 'or choose discard [8]', curses.color_pair(2))
-
-            # Place the card where it belongs
             putCard = None
             validInput = False
             while not validInput:
                 putCard = settings.mainscreen.getch() - 48
                 curses.flushinp()
                 if(putCard == 8):
-                # [8] Discard
+                    # Put the card in the discard pile
                     if(drawFrom == 7):
                         # Move from Drawn to Discard
                         drawnCard = self.deck.cards.pop()
@@ -242,11 +245,12 @@ class Game:
                     toDiscard = self.hands[self.curPlayer-1].cards.pop(putCard-1)
                     toDiscard.flipUp()
                     if(drawFrom == 7):
-                        # Draw top card of stock deck
+                        # Draw top card of draw pile
                         drawnCard = self.deck.cards.pop()
                     else:
                         # Draw top card of discard
                         drawnCard = self.discard.cards.pop()
+                    # Perform the swap
                     self.hands[self.curPlayer-1].cards.insert(putCard-1, drawnCard)
                     self.discard.addCard(toDiscard)
                     validInput = True
@@ -282,10 +286,10 @@ class Game:
         self.buildScoreboard()
 
         # For each round
-        for r in range(self.numRounds):
+        for round in range(self.numRounds):
             self.roundFinished = False              # Flag for when all cards are flipped
             self.prevScores = self.scores.copy()    # Update based on final scores of previous round
-            self.curRound = r + 1                   # Label of current round
+            self.curRound = round + 1                   # Label of current round
             self.curTurn = 0                        # The turn within the round
 
             # Initialize a full deck
@@ -301,17 +305,19 @@ class Game:
                     curHand.addCard(self.deck.drawCard())
                 self.hands.append(curHand)
 
-            # Add one card to the discard
+            # Add one card from draw pile to the discard pile
             self.discard = Deck()
             self.discard.addCard(self.deck.drawCard())
             self.discard.cards[0].flipUp()
 
-            # For each player's turn
+            # Each player can take turns moving
+            # Until one player has all 6 cards face up
             while not self.roundFinished:
+
                 # One player takes a turn
                 self.takeTurn()
 
-                # End the round if the player has flipped all their cards
+                # End the round if the previous player has flipped all their cards
                 numFaceUp = len([c for c in self.hands[self.curPlayer-2].cards if c.faceUp])
                 if(numFaceUp == 6):
                     self.roundFinished = True
@@ -328,7 +334,7 @@ class Game:
             settings.mainscreen.addstr(5, 0, settings.buildLogo())
             settings.mainscreen.addstr(17, 31, '[ Press any key to continue ]', curses.color_pair(4))
             settings.mainscreen.refresh()
-            start = settings.mainscreen.getch()
+            start = settings.mainscreen.getch() # Wait for feeback
 
         # Announce the winner of the game
         settings.mainscreen.clear()
@@ -337,5 +343,7 @@ class Game:
         settings.mainscreen.addstr(17, 31, '[ Press any key to continue ]', curses.color_pair(1))
         settings.mainscreen.bkgd(' ', curses.color_pair(4))
         settings.mainscreen.refresh()
-        start = settings.mainscreen.getch()
+        start = settings.mainscreen.getch() # Wait for feeback
+
+        # Clean for next game
         settings.mainscreen.clear()
