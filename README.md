@@ -30,7 +30,7 @@ As defined by Bicycle Playing Cards:
 
 ## Design Decisions
 
-I decided to implement this game in Python using curses, because curses allows an interactive user experience that makes the card game both recognizeable and accessible. I utilized python classes to take an object-oriented approach to structuring the data. This allows clarity between the many card decks that are in play at one time.
+I decided to implement this game in Python using curses, because curses allows an interactive user experience that makes the card game both recognizeable and accessible. I utilized python classes to take an object-oriented approach to structuring the data. This allowed clarity between the many card decks that are in play at one time.
 
 #### Considerations
 * What happens if the terminal size is not large enough to display some graphics?
