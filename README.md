@@ -21,23 +21,24 @@ As defined by Bicycle Playing Cards:
 > * Each king scores zero points.
 > * A pair of equal cards in the same column scores zero points for the column (even if the equal cards are 2s).
 
-## How to Run
 
+## How to Run
 1. `cd` into the `card-golf` directory
 2. Run `python3 play_golf.py`
 3. Follow the on-screen prompts to play the game
 4. Press `ctrl-c` to exit the game
 
-
 ## Design Decisions
 
-#### CONSIDERATIONS TAKEN
+I decided to implement this game in Python using curses, because curses allows an interactive user experience that makes the card game both recognizeable and accessible. I utilized python classes to take an object-oriented approach to structuring the data. This allows clarity between the many card decks that are in play at one time.
+
+#### Considerations
 * What happens if the terminal size is not large enough to display some graphics?
 * What happens if the round ends without everyone getting equal turns?
 * What happens if the draw pile runs out of cards?
 * What happens if the keyboard input is invalid (during game initialization, drawing, or discarding)?
 * What happens if the score is tied at the end of a round or game?
 
-#### RESOURCES USED
+#### Resources
 * [Six Card Golf - Card Game Rules](https://www.bicyclecards.com/how-to-play/six-card-golf/) by Bicycle Playing Card
 * [Curses Programming with Python](https://docs.python.org/3/howto/curses.html) by Python 3.7 docs
