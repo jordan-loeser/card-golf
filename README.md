@@ -1,4 +1,4 @@
-# Six Card Golf 🏌️‍♂️⛳🏌️‍♀️
+# cardgolf 🏌️‍♂️🏌️‍♀️
 
 ![Screenshot](https://github.com/Jordan-Loeser/card-golf/blob/master/screenshot.png)
 
